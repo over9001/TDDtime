@@ -38,17 +38,20 @@ class NewVisitorTest(unittest.TestCase):
 
 		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_elements_by_tag_name('tr')             #don't miss the s on find_elements
-		self.assertTrue(
-			any(row.text == '1: Buy peackock feathers' for row in rows),
-			"New to-do item did not appear in table"
-		)
+		self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
 
 
 		# There is still a text box inviting her to add another item. She
 		# enters "Use peacock feathers to make a fly" (Edith is very methodical)
-		inputbox.send_keys('Use peackock feathers to make a fly')
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('Use peacock feathers to make a fly')
 
 		# The page updates again, and now shows both items on her list
+		inputbox.send_keys(Keys.ENTER)
+
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')             #don't miss the s on find_elements
+		self.assertIn('2: Use peacock feathers to make a fly', [row.text for row in rows])
 
 
 		# Edith wonders whether the site will remember her list. Then she sees
